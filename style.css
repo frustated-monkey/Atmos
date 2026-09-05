@@ -1,0 +1,326 @@
+/* ============ RESET ============ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  color: var(--text);
+  overflow-x: hidden;
+  transition: color 0.4s ease;
+}
+
+h1, h2 { font-family: 'Space Grotesk', sans-serif; }
+
+/* ============ THEME TOKENS ============ */
+body[data-theme="dark"] {
+  --text: #eef2f7;
+  --text-dim: #9aa7bd;
+  --glass-bg: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-shadow: rgba(0, 0, 0, 0.35);
+  --base-bg: #0b1120;
+  --accent: #ffb454;
+  --accent-2: #6fd3ff;
+}
+
+body[data-theme="light"] {
+  --text: #16202e;
+  --text-dim: #55627a;
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-shadow: rgba(60, 80, 120, 0.18);
+  --base-bg: #dbe9fb;
+  --accent: #e8862c;
+  --accent-2: #1f8fd6;
+}
+
+/* Condition-tinted sky gradients — actually reflect the current weather */
+body { background: var(--base-bg); }
+
+body[data-condition="clear"]    { --sky-1: #ff9f5a; --sky-2: #3f7fd6; }
+body[data-condition="clouds"]   { --sky-1: #7d8fa8; --sky-2: #3c4d67; }
+body[data-condition="rain"]     { --sky-1: #3c5978; --sky-2: #1a2438; }
+body[data-condition="thunderstorm"] { --sky-1: #4a3f6b; --sky-2: #14101f; }
+body[data-condition="snow"]     { --sky-1: #cfe4f5; --sky-2: #7c94ad; }
+body[data-condition="mist"]     { --sky-1: #9aa6ad; --sky-2: #4d565c; }
+
+/* ============ AMBIENT BACKGROUND ============ */
+.sky {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--base-bg);
+  overflow: hidden;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.55;
+  transition: background 0.6s ease;
+}
+
+.blob-a { width: 46vw; height: 46vw; top: -12vw; left: -10vw; background: var(--sky-1, #ff9f5a); }
+.blob-b { width: 38vw; height: 38vw; bottom: -14vw; right: -8vw; background: var(--sky-2, #3f7fd6); }
+.blob-c { width: 24vw; height: 24vw; top: 40%; left: 60%; background: var(--accent); opacity: 0.25; }
+
+/* ============ LAYOUT ============ */
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-mark { font-size: 22px; color: var(--accent); }
+.brand-name { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 20px; letter-spacing: 0.02em; }
+
+.theme-toggle {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.25s ease;
+}
+.theme-toggle:hover { transform: scale(1.08); }
+
+/* ============ SEARCH ============ */
+.search {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.search input {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--text);
+  font-size: 15px;
+  outline: none;
+}
+.search input::placeholder { color: var(--text-dim); }
+
+.search button {
+  padding: 0 22px;
+  border-radius: 16px;
+  border: none;
+  background: var(--accent);
+  color: #191008;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+.search button:hover { filter: brightness(1.08); }
+
+.locate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 13px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.locate-btn:hover { background: var(--glass-bg); color: var(--text); }
+
+.status-line {
+  min-height: 18px;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+/* ============ GLASS CARDS ============ */
+.grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  grid-template-areas:
+    "hero aqi"
+    "news news"
+    "trend trend"
+    "outlook outlook";
+  gap: 18px;
+}
+
+.hero-card { grid-area: hero; }
+.aqi-card { grid-area: aqi; }
+.news-card { grid-area: news; }
+.trend-card { grid-area: trend; }
+.outlook-card { grid-area: outlook; }
+
+.card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 26px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 12px 40px var(--glass-shadow);
+  animation: rise 0.5s ease-out;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+/* ---- Hero ---- */
+.hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.city-name { font-size: 26px; font-weight: 600; }
+.updated-at { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+.condition-icon { font-size: 42px; line-height: 1; }
+
+.temp-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  margin: 18px 0 22px;
+}
+
+.temp { font-size: 68px; font-weight: 700; line-height: 1; }
+
+.temp-meta { display: flex; flex-direction: column; gap: 4px; padding-bottom: 6px; }
+.desc { text-transform: capitalize; font-size: 15px; }
+.feels-like { font-size: 12px; color: var(--text-dim); }
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.stat {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.stat-label { display: block; font-size: 11px; color: var(--text-dim); margin-bottom: 4px; }
+.stat-value { display: block; font-size: 14px; font-weight: 600; }
+
+/* ---- AQI ---- */
+.aqi-body { display: flex; flex-direction: column; gap: 18px; align-items: center; }
+
+.aqi-dial {
+  width: 132px; height: 132px;
+  border-radius: 50%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  border: 6px solid var(--aqi-color, var(--accent-2));
+  transition: border-color 0.4s ease;
+  padding: 0 8px;
+}
+.aqi-number { font-size: 27px; font-weight: 700; line-height: 1; }
+.aqi-label { font-size: 11px; color: var(--text-dim); margin-top: 3px; text-align: center; }
+
+.aqi-breakdown { list-style: none; width: 100%; }
+.aqi-breakdown li {
+  display: flex; justify-content: space-between;
+  font-size: 13px; padding: 6px 2px;
+  border-bottom: 1px dashed var(--glass-border);
+}
+.aqi-breakdown li:last-child { border-bottom: none; }
+.aqi-breakdown span { color: var(--text-dim); }
+
+/* ---- News ---- */
+.news-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+
+.news-list li a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+}
+.news-list li a:hover { color: var(--accent); }
+
+.news-list .news-source {
+  display: block;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+
+.news-empty { color: var(--text-dim); font-size: 13px; }
+
+/* ---- Trend chart ---- */
+.chart-wrap { position: relative; width: 100%; }
+
+/* ---- Outlook (next days) ---- */
+.outlook-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 10px;
+}
+
+.outlook-day {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 14px 8px;
+  text-align: center;
+}
+
+.outlook-day .day-label { display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
+.outlook-day .day-icon { display: block; font-size: 26px; margin-bottom: 6px; }
+.outlook-day .day-temps { display: block; font-size: 13px; font-weight: 600; }
+.outlook-day .day-temps .lo { color: var(--text-dim); font-weight: 500; }
+.outlook-day .day-rain { display: block; font-size: 11px; color: var(--accent-2); margin-top: 4px; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 720px) {
+  .grid {
+    grid-template-columns: 1fr;
+    grid-template-areas: "hero" "aqi" "news" "trend" "outlook";
+  }
+  .temp { font-size: 54px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .card, .theme-toggle, .locate-btn, .blob { animation: none !important; transition: none !important; }
+}
+
+/* Visible keyboard focus */
+button:focus-visible, input:focus-visible, a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

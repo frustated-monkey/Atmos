@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atmos — Weather, Air & Local News</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+</head>
+<body data-theme="dark" data-condition="clear">
+
+  <div class="sky" aria-hidden="true">
+    <div class="blob blob-a"></div>
+    <div class="blob blob-b"></div>
+    <div class="blob blob-c"></div>
+  </div>
+
+  <div class="app">
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">◐</span>
+        <span class="brand-name">Atmos</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" title="Switch theme" aria-label="Switch light and dark theme">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </header>
+
+    <form class="search" id="searchForm" autocomplete="off">
+      <input type="text" id="cityInput" placeholder="Search a city — try Delhi, Lucknow, Tokyo..." aria-label="City name">
+      <button type="submit" aria-label="Search">Search</button>
+    </form>
+
+    <button class="locate-btn" id="locateBtn">
+      <span>📍</span> Use my location
+    </button>
+
+    <p class="status-line" id="statusLine"></p>
+
+    <main class="grid">
+
+      <!-- MAIN WEATHER CARD -->
+      <section class="card hero-card" id="weatherCard">
+        <div class="hero-top">
+          <div>
+            <h1 class="city-name" id="cityName">—</h1>
+            <p class="updated-at" id="updatedAt"></p>
+          </div>
+          <div class="condition-icon" id="conditionIcon">⛅</div>
+        </div>
+
+        <div class="temp-row">
+          <span class="temp" id="temperature">--°</span>
+          <div class="temp-meta">
+            <span class="desc" id="description">Waiting for a city...</span>
+            <span class="feels-like" id="feelsLike"></span>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat">
+            <span class="stat-label">Humidity</span>
+            <span class="stat-value" id="humidity">--%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Wind</span>
+            <span class="stat-value" id="wind">-- km/h</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Pressure</span>
+            <span class="stat-value" id="pressure">-- hPa</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Visibility</span>
+            <span class="stat-value" id="visibility">-- km</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- AIR QUALITY CARD -->
+      <section class="card aqi-card" id="aqiCard">
+        <h2 class="card-title">Air Quality</h2>
+        <div class="aqi-body">
+          <div class="aqi-dial" id="aqiDial">
+            <span class="aqi-number" id="aqiNumber">--</span>
+            <span class="aqi-label" id="aqiLabel">No data</span>
+          </div>
+          <ul class="aqi-breakdown" id="aqiBreakdown">
+            <li><span>PM2.5</span><b id="pm25">--</b></li>
+            <li><span>PM10</span><b id="pm10">--</b></li>
+            <li><span>NO₂</span><b id="no2">--</b></li>
+            <li><span>O₃</span><b id="o3">--</b></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- LOCAL NEWS CARD -->
+      <section class="card news-card" id="newsCard">
+        <h2 class="card-title">From this region</h2>
+        <ul class="news-list" id="newsList">
+          <li class="news-empty">Search a city to see local headlines.</li>
+        </ul>
+      </section>
+
+      <!-- 7-DAY TREND CARD -->
+      <section class="card trend-card" id="trendCard">
+        <h2 class="card-title">Past 7 days &amp; what's coming</h2>
+        <div class="chart-wrap">
+          <canvas id="trendChart" height="160"></canvas>
+        </div>
+      </section>
+
+      <!-- NEXT DAYS OUTLOOK -->
+      <section class="card outlook-card" id="outlookCard">
+        <h2 class="card-title">Next few days</h2>
+        <div class="outlook-row" id="outlookRow">
+          <p class="news-empty">Search a city to see the outlook.</p>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+<script src="script.js"></script>
+</body>
+</html>
